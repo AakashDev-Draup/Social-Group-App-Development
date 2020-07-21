@@ -5,21 +5,25 @@
 /SocialGroup		#The main app folder
 	run.py		#gets the application running
 	app.py		#social group application
+	errors.py	#file containing the error response
 	/venv		#this contains the virtual environment
 	/templates	#contains the templates for response
 	/Model
+		__init__.py
 		models.py		#use data through python objects 
 	/config
 		__init__.py
 		config.py 		#this config file makes connection to the database
-	/view
-		errors.py		#file containing the error response
-		UserFunctions.py	#file containing fuctions for CRUD operations using REST
-	/urls
-		urls.py			#assigning the routes
-	/services			#for sending mail
+	/services			
 		__init__.py
-		mail.py
+		mail.py			
+		comment.py		#files containing user services
+		Post.py
+		etc
+
+	/controller
+		routes.py			#assigning the routes
+	
 	/TaskQueue			#Queued tasks
 		feed.py			#functions handles the daily feed for
 		inactive.py		#delete the inactive members
@@ -33,27 +37,37 @@
 
 #Mongodb schema
 
-class Groups(Document):
-	group_name = StringField(max_length=50, required=True)
-	group_type = StringField(max_length=10, required=True)
+Entities:
+    - Permission
+        * ID 
+        * Name
 
-class User(Document):
-	username = StringField(max_length=50, required=True)
-	email = StringField(max_length=50, required=True)
-	role = StringField(max_length=10, required=True)
-	group = ReferenceField(Groups)
-	 
-
-
-class Comment(EmbeddedDocument):
-	content = StringField()
-	name = StringField(max_length=120)
-
-class Post(Document):
-	title = StringField(max_length=120, required=True)
-	author = ReferenceField(User)
-	approved = BooleanField(default=False)
-	comments = ListField(EmbeddedDocumentField(Comment))
+    - Role
+        * ID
+        * NAME
+        * Permission[]
+    - User
+        * ID
+        * NAME
+        * email
+        * Role
+    - GROUP
+        * ID
+        * Name
+        * Users[]
+        * Visibilty = PUBLIC | PRIVATE
+    - POST
+        * ID
+	* UserId
+	* GroupId
+        * content
+    
+    - Comment
+        * Id
+        * PostId
+        * userId
+        * content
+	
 
 
 #List of APIS
@@ -66,10 +80,11 @@ class Post(Document):
 
 #Expected timeline of things
 
-1. The models and view setup 3-4 hours
-2. The api method setup 3-4 hours
-3. The authorisation setup 3-4 hours
-4. The email setup 3-4 hours
-5. The queying tasks setup 8-12 hours
-6. The data dump process and testing 6-8 hours
+1. The models and view setup Wednesday
+2. Setting up basic service modules and testing with data dump before proceeding Thursday
+3. Other services setup and api routing Friday
+3. The authorisation and email setup Saturday
+4. The queying tasks setup Sunday
+
+
 
