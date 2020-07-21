@@ -1,0 +1,75 @@
+#Tech Stack: Python, Flask, Mongo, and RQ
+
+#The application architecture
+
+/SocialGroup		#The main app folder
+	run.py		#gets the application running
+	app.py		#social group application
+	/venv		#this contains the virtual environment
+	/templates	#contains the templates for response
+	/Model
+		models.py		#use data through python objects 
+	/config
+		__init__.py
+		config.py 		#this config file makes connection to the database
+	/view
+		errors.py		#file containing the error response
+		UserFunctions.py	#file containing fuctions for CRUD operations using REST
+	/urls
+		urls.py			#assigning the routes
+	/services			#for sending mail
+		__init__.py
+		mail.py
+	/TaskQueue			#Queued tasks
+		feed.py			#functions handles the daily feed for
+		inactive.py		#delete the inactive members
+		notify.py		#daily notification for posts
+	/Datadump
+		__init__.py
+		dump.py
+
+
+
+
+#Mongodb schema
+
+class Groups(Document):
+	group_name = StringField(max_length=50, required=True)
+	group_type = StringField(max_length=10, required=True)
+
+class User(Document):
+	username = StringField(max_length=50, required=True)
+	email = StringField(max_length=50, required=True)
+	role = StringField(max_length=10, required=True)
+	group = ReferenceField(Groups)
+	 
+
+
+class Comment(EmbeddedDocument):
+	content = StringField()
+	name = StringField(max_length=120)
+
+class Post(Document):
+	title = StringField(max_length=120, required=True)
+	author = ReferenceField(User)
+	approved = BooleanField(default=False)
+	comments = ListField(EmbeddedDocumentField(Comment))
+
+
+#List of APIS
+
+/api/group				#to create group and see all the groups
+/api/group/<id>				#to open a particular group by id
+/api/group/posts/<id>			#to make edit or read posts for a user by id
+/api/group/posts/comment/<id>		#to comment on the post
+
+
+#Expected timeline of things
+
+1. The models and view setup 3-4 hours
+2. The api method setup 3-4 hours
+3. The authorisation setup 3-4 hours
+4. The email setup 3-4 hours
+5. The queying tasks setup 8-12 hours
+6. The data dump process and testing 6-8 hours
+
