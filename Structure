@@ -50,16 +50,19 @@ Entities:
         * ID
         * NAME
         * email
-        * Role
+        * groups =[]
+	* posts = []
+	* comments = []
     - GROUP
         * ID
         * Name
-        * Users[]
+        * Users dict with id and role
         * Visibilty = PUBLIC | PRIVATE
     - POST
         * ID
 	* UserId
 	* GroupId
+	* approval
         * content
     
     - Comment
