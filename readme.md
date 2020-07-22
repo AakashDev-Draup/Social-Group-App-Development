@@ -4,7 +4,7 @@
 #The application architecture
 
 
--/SocialGroup		#The main app folder
+#/SocialGroup		#The main app folder
 
 	run.py		#gets the application running
 	app.py		#social group application
@@ -80,10 +80,10 @@ Entities:
 
 #List of APIS
 
--/api/group				#to create group and see all the groups
--/api/group/<id>				#to open a particular group by id
--/api/group/<id>/posts			#to make edit or read posts for a user by id
--/api/posts/<id>/comment			#to comment on the post
+#/api/group				#to create group and see all the groups
+#/api/group/<id>				#to open a particular group by id
+#/api/group/<id>/posts			#to make edit or read posts for a user by id
+#/api/posts/<id>/comment			#to comment on the post
 
 
 #Expected timeline of things
