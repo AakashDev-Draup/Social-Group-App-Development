@@ -5,30 +5,32 @@
 /SocialGroup		#The main app folder
 	run.py		#gets the application running
 	app.py		#social group application
-	errors.py	#file containing the error response
-	/venv		#this contains the virtual environment
+	/Exception
+		exceptions.py	#file containing the error response
 	/templates	#contains the templates for response
-	/Model
+	/model
 		__init__.py
 		models.py		#use data through python objects 
 	/config
 		__init__.py
 		config.py 		#this config file makes connection to the database
-	/services			
+	/view			
 		__init__.py
 		mail.py			
 		comment.py		#files containing user services
-		Post.py
+		post.py
 		etc
 
-	/controller
-		routes.py			#assigning the routes
+	/urls
+		url.py			#assigning the routes
+	/auth
+		auth.py			#assigning authorisation
 	
-	/TaskQueue			#Queued tasks
+	/taskqueue			#Queued tasks
 		feed.py			#functions handles the daily feed for
 		inactive.py		#delete the inactive members
 		notify.py		#daily notification for posts
-	/Datadump
+	/datadump
 		__init__.py
 		dump.py
 
@@ -56,13 +58,13 @@ Entities:
     - GROUP
         * ID
         * Name
-        * Users dict with id and role
+        * Users {} with id and role
         * Visibilty = PUBLIC | PRIVATE
     - POST
         * ID
 	* UserId
 	* GroupId
-	* approval
+	* approval boolean
         * content
     
     - Comment
@@ -77,14 +79,14 @@ Entities:
 
 /api/group				#to create group and see all the groups
 /api/group/<id>				#to open a particular group by id
-/api/group/posts/<id>			#to make edit or read posts for a user by id
-/api/group/posts/comment/<id>		#to comment on the post
+/api/group/<id>/posts			#to make edit or read posts for a user by id
+/api/posts/<id>/comment			#to comment on the post
 
 
 #Expected timeline of things
 
-1. The model, config and basic services setup Wednesday
-2. continue developing service modules and testing with data dump before proceeding Thursday
+1. The model, config and basic services from view setup Wednesday
+2. continue developing service modules from view and testing with data dump before proceeding Thursday
 3. remaining services setup, api routing and testing Friday
 3. The authorisation, email setup and testing Saturday
 4. The queying tasks setup and testing Sunday
