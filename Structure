@@ -80,9 +80,9 @@ Entities:
 
 #Expected timeline of things
 
-1. The models and view setup Wednesday
-2. Setting up basic service modules and testing with data dump before proceeding Thursday
-3. Other services setup, api routing and testing Friday
+1. The model, config and basic services setup Wednesday
+2. continue developing service modules and testing with data dump before proceeding Thursday
+3. remaining services setup, api routing and testing Friday
 3. The authorisation, email setup and testing Saturday
 4. The queying tasks setup and testing Sunday
 
