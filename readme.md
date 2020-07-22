@@ -6,33 +6,33 @@
 
 #/SocialGroup		#The main app folder
 
-	run.py		#gets the application running
-	app.py		#social group application
+	run.py		...gets the application running
+	app.py		...social group application
 	/Exception
-		exceptions.py	#file containing the error response
-	/templates	#contains the templates for response
+		exceptions.py		...file containing the error response
+	/templates			...contains the templates for response
 	/model
 		__init__.py
-		models.py		#use data through python objects 
+		models.py		...use data through python objects 
 	/config
 		__init__.py
-		config.py 		#this config file makes connection to the database
+		config.py 		...this config file makes connection to the database
 	/view
 		__init__.py
 		mail.py			
-		comment.py		#files containing user services
+		comment.py		...files containing user services
 		post.py
 		etc
 
 	/urls
-		url.py			#assigning the routes
+		url.py			...assigning the routes
 	/auth
-		auth.py			#assigning authorisation
+		auth.py			...assigning authorisation
 	
-	/taskqueue			#Queued tasks
-		feed.py			#functions handles the daily feed for
-		inactive.py		#delete the inactive members
-		notify.py		#daily notification for posts
+	/taskqueue			...Queued tasks
+		feed.py			...functions handles the daily feed for
+		inactive.py		...delete the inactive members
+		notify.py		...daily notification for posts
 	/datadump
 		__init__.py
 		dump.py
@@ -80,10 +80,10 @@ Entities:
 
 #List of APIS
 
-#/api/group				#to create group and see all the groups
-#/api/group/<id>				#to open a particular group by id
-#/api/group/<id>/posts			#to make edit or read posts for a user by id
-#/api/posts/<id>/comment			#to comment on the post
+*/api/group				...to create group and see all the groups
+*/api/group/<id>				...to open a particular group by id
+*/api/group/<id>/posts			...to make edit or read posts for a user by id
+*/api/posts/<id>/comment			...to comment on the post
 
 
 #Expected timeline of things
