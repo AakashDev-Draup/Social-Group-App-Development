@@ -4,77 +4,77 @@
 #The application architecture
 
 
-#/SocialGroup		#The main app folder
+	SocialGroup		...The main app folder
 
-	run.py		...gets the application running
-	app.py		...social group application
-	/Exception
-		exceptions.py		...file containing the error response
-	/templates			...contains the templates for response
-	/model
-		__init__.py
-		models.py		...use data through python objects 
-	/config
-		__init__.py
-		config.py 		...this config file makes connection to the database
-	/view
-		__init__.py
-		mail.py			
-		comment.py		...files containing user services
-		post.py
-		etc
+		run.py		...gets the application running
+		app.py		...social group application
+		/Exception
+			exceptions.py		...file containing the error response
+		/templates			...contains the templates for response
+		/model
+			__init__.py
+			models.py		...use data through python objects 
+		/config
+			__init__.py
+			config.py 		...this config file makes connection to the database
+		/view
+			__init__.py
+			mail.py			
+			comment.py		...files containing user services
+			post.py
+			etc
 
-	/urls
-		url.py			...assigning the routes
-	/auth
-		auth.py			...assigning authorisation
-	
-	/taskqueue			...Queued tasks
-		feed.py			...functions handles the daily feed for
-		inactive.py		...delete the inactive members
-		notify.py		...daily notification for posts
-	/datadump
-		__init__.py
-		dump.py
+		/urls
+			url.py			...assigning the routes
+		/auth
+			auth.py			...assigning authorisation
+		
+		/taskqueue			...Queued tasks
+			feed.py			...functions handles the daily feed for
+			inactive.py		...delete the inactive members
+			notify.py		...daily notification for posts
+		/datadump
+			__init__.py
+			dump.py
 
 
 
 
 #Mongodb schema
 
-*Entities:
-    * Permission
-        * ID 
-        * Name
+	*Entities:
+	    * Permission
+		* ID 
+		* Name
 
-    * Role
-        * ID
-        * NAME
-        * Permission[]
-    * User
-        * ID
-        * NAME
-        * email
-        * groups =[]
-	* posts = []
-	* comments = []
-    * GROUP
-        * ID
-        * Name
-        * Users {} with id and role
-        * Visibilty = PUBLIC | PRIVATE
-    * POST
-        * ID
-	* UserId
-	* GroupId
-	* approval boolean
-        * content
-    
-    * Comment
-        * Id
-        * PostId
-        * userId
-        * content
+	    * Role
+		* ID
+		* NAME
+		* Permission[]
+	    * User
+		* ID
+		* NAME
+		* email
+		* groups =[]
+		* posts = []
+		* comments = []
+	    * GROUP
+		* ID
+		* Name
+		* Users {} with id and role
+		* Visibilty = PUBLIC | PRIVATE
+	    * POST
+		* ID
+		* UserId
+		* GroupId
+		* approval boolean
+		* content
+	    
+	    * Comment
+		* Id
+		* PostId
+		* userId
+		* content
 	
 
 
