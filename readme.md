@@ -1,8 +1,11 @@
 #Tech Stack: Python, Flask, Mongo, and RQ
 
+
 #The application architecture
 
+
 /SocialGroup		#The main app folder
+
 	run.py		#gets the application running
 	app.py		#social group application
 	/Exception
@@ -14,7 +17,7 @@
 	/config
 		__init__.py
 		config.py 		#this config file makes connection to the database
-	/view			
+	/view
 		__init__.py
 		mail.py			
 		comment.py		#files containing user services
