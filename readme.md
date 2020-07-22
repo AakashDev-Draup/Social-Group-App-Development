@@ -42,35 +42,35 @@
 
 #Mongodb schema
 
-Entities:
-    - Permission
+*Entities:
+    * Permission
         * ID 
         * Name
 
-    - Role
+    * Role
         * ID
         * NAME
         * Permission[]
-    - User
+    * User
         * ID
         * NAME
         * email
         * groups =[]
 	* posts = []
 	* comments = []
-    - GROUP
+    * GROUP
         * ID
         * Name
         * Users {} with id and role
         * Visibilty = PUBLIC | PRIVATE
-    - POST
+    * POST
         * ID
 	* UserId
 	* GroupId
 	* approval boolean
         * content
     
-    - Comment
+    * Comment
         * Id
         * PostId
         * userId
@@ -80,10 +80,10 @@ Entities:
 
 #List of APIS
 
-*/api/group				...to create group and see all the groups
-*/api/group/<id>				...to open a particular group by id
-*/api/group/<id>/posts			...to make edit or read posts for a user by id
-*/api/posts/<id>/comment			...to comment on the post
+1. /api/group				...to create group and see all the groups
+2. /api/group/<id>				...to open a particular group by id
+3. /api/group/<id>/posts			...to make edit or read posts for a user by id
+4. /api/posts/<id>/comment			...to comment on the post
 
 
 #Expected timeline of things
@@ -91,8 +91,8 @@ Entities:
 1. The model, config and basic services from view setup Wednesday
 2. continue developing service modules from view and testing with data dump before proceeding Thursday
 3. remaining services setup, api routing and testing Friday
-3. The authorisation, email setup and testing Saturday
-4. The queying tasks setup and testing Sunday
+4. The authorisation, email setup and testing Saturday
+5. The queying tasks setup and testing Sunday
 
 
 
