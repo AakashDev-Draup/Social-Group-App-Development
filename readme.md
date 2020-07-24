@@ -5,7 +5,7 @@
 
 	1. Formulation of program architecture. 	(Wednesday)
 	2. Formulation of document schema.		(Wednesday)
-	3. Implementing the document schema.		(Thursday)
+	3. Implementing the document schema.		(Wednesday-Thursday)
 	4. Setting up app configuration and URL for API requests.					(Thursday)
 	5. Setting up of POST and PUT requests using REST for the group, post, user, and comment view.	(Thursday)
 	6. Adding authentication and authorization to the requests.					(Thursday-Friday)
