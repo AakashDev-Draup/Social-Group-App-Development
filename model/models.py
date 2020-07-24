@@ -1,31 +1,20 @@
 
 from configuration.config import db
 
-
-class Permissions(db.Document):
-    # id
-    name = db.StringField(required=True, unique=True)
+# id reminds every class has unique id
 
 
-# this class is for scalability
-class Roles(db.Document):
-    # id
-    name = db.StringField(required=True, unique=True, default='member')
-    permission = db.ListField(db.ReferenceField('Permissions'), reverse_delete_rule=db.PULL)      # list of permissions ids
-
-
-class groupuser(db.EmbeddedDocument):
-    userid = db.ReferenceField('User')          # reverse delete rule not supported
-    roleid = db.ReferenceField('Roles')
+class Role(db.Document):
+    name = db.StringField(required=True,unique=True, max_length=50)
+    permissions = db.ListField(db.StringField())
 
 
 class Group(db.Document):
     # id
     name = db.StringField(required=True, max_length=50)
     visibility = db.StringField(default='public')
-    # users = db.DictField()    # all the users in group {'userid':'roleid'}
-    users = db.ListField(db.EmbeddedDocumentField('groupuser'))
-
+    posts = db.ListField(db.ReferenceField('Post'), reverse_delete_rule=db.PULL)
+    users = db.ListField(db.DictField())        # fill with {'userid':'roleid'}
 
 
 class Post(db.Document):
@@ -50,8 +39,8 @@ class User(db.Document):
     # id
     name = db.StringField(required=True, max_length=30)
     email = db.StringField(required=True)
-    # this can be left for now
-    # groups = db.ListField(db.StringField('Group', reverse_delete_rule=db.PULL))
+    # not required now
+    # groups = db.ListField(db.ReferenceField('Group', reverse_delete_rule=db.PULL))
     posts = db.ListField(db.ReferenceField('Post', reverse_delete_rule=db.PULL))      # ids of post created by the user
     comments = db.ListField(db.ReferenceField('Comment', reverse_delete_rule=db.PULL))
 

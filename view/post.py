@@ -7,20 +7,30 @@ from flask_restful import Resource
 
 class postapi(Resource):
 
-    # create post and update in user list
-    # group users can post only such authentication is required
+    # create post and update in user list and group list
+    # Only group users can post
     # / api / Group / < id > / post
     def post(self,id):
+        # id is group id and body contains Post class contents
         body = request.get_json()
-        post = Post(**body, groupid=ObjectId(id)).save()
-        # mongo reference field only takes object id convert with str when required
-        postid = post.id
         userid = body['userid']
-        # updates user list for post
+        group = Group.objects.get(id=id)
+        for user in group.users:
+            if userid in user:
+                post = Post(**body, groupid=ObjectId(id)).save()
+                # group id is a reference field and rf only takes object id.
+                # convert object id to string with str when required
+                postid = post.id
+                # change user list
+                User.objects(id=userid).update_one(push__posts=post)
+                # change group list
+                group.update(push__posts=post)
+                return {'postid': str(postid)}, 200
+        return 'You are not a member of the group'
 
-        user = User.objects(id=userid).update_one(push__posts=post)
-
-        return {'postid': str(postid)}, 200
 
 
-    #admin moderator delete post
+    #update posts in group
+    #admin moderator delete ANY post
+    # add user edit post
+    # user delete post
