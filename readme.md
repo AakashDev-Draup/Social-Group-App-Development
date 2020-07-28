@@ -1,7 +1,7 @@
 #Tech Stack: Python, Flask, Mongo, and RQ
 
 
-#Work Completed 1:
+#Work Completed :
 	
 	1. Updating the corrections discussed at Friday's meeting.				(Friday)
 	2. Updating document schema to insert create and update time variables. 		(Friday)
@@ -11,7 +11,7 @@
 	6. Queue task for sending post activity via mail. 					(Tuesday)
 
 
-#Work Ahead:
+#Work Ahead :
 
 	1. Suggested corrections.					(Wednesday)
 	2. Testing the application with a data dump.			(Wednesday) 
