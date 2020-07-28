@@ -1,36 +1,45 @@
 from bson import ObjectId
-from flask import Response, request
-from model.models import User,Group,Post
+from flask import request
+from model.models import User,Group,Post,Role
 from flask_restful import Resource
+from datetime import datetime
 
 
+class PostApi(Resource):
 
-class postapi(Resource):
-
-    # create post and update in user list and group list
+    # Update last active status for the user who posted
     # Only group users can post
-    # / api / Group / < id > / post
-    def post(self,id):
-        # id is group id and body contains Post class contents
+
+    def post(self,groupid):
+        # body contains user id,content
         body = request.get_json()
-        userid = body['userid']
-        group = Group.objects.get(id=id)
-        for user in group.users:
-            if userid in user:
-                post = Post(**body, groupid=ObjectId(id)).save()
-                # group id is a reference field and rf only takes object id.
-                # convert object id to string with str when required
-                postid = post.id
-                # change user list
-                User.objects(id=userid).update_one(push__posts=post)
-                # change group list
-                group.update(push__posts=post)
-                return {'postid': str(postid)}, 200
-        return 'You are not a member of the group'
+        group = Group.objects.get(id=groupid)
+        if body['userid'] in group.role_dict:
+            post = Post(**body, groupid=ObjectId(groupid))
+            post.date_created = datetime.now()
+            post.save()
+            # group id is a reference field and rf only takes object id.
+            # convert object id to string with str when required
+            # update last active status for user
+            temp_dict = group.lastactive_dict
+            temp_dict[body['userid']]=datetime.now()
+            group.update(set__lastactive_dict=temp_dict)
+
+            return {'postid': str(post.id)}, 200
+        else:
+            return "You are not a member of the group",200
 
 
-
-    #update posts in group
-    #admin moderator delete ANY post
-    # add user edit post
-    # user delete post
+class DeletePostApi(Resource):
+    # only post owner, admin and moderator can delete
+    def delete(self,groupid,postid):
+        # body contains user id
+        body = request.get_json()
+        post = Post.objects.get(id=postid)
+        group = Group.objects.get(id=groupid)
+        role = group.role_dict[body['userid']]
+        if post.userid == body['userid'] or role == 'ADMIN' or role == 'MODERATOR':
+            post.delete()
+            return "Post deleted",200
+        else:
+            return "You don't have the permission required" , 200

@@ -1,80 +1,96 @@
 from flask import Response, request
-from model.models import Group,Role
+from model.models import Group,Role,Post
 from flask_restful import Resource
+from datetime import datetime
 
 
-class Groupapi(Resource):
-
-    # create group
-    def post(self,id):
-        # id is the userid of group creator
+class ReadGroupApi(Resource):
+    # read group contents based on access offered by group i.e. public or private
+    def get(self,groupid):
+        # body will have userid of person accessing to read
         body = request.get_json()
-        group = Group(**body)
-        group.users = [{id:'ADMIN'}]
+        userid = body['userid']
+        group = Group.objects.get(id=groupid)
+
+        if group.visibility == 'public':
+            posts = Post.objects(groupid=groupid).to_json()
+            return Response(posts, mimetype="application/json", status=200)
+        elif userid in group.role_dict:
+            posts = Post.objects(groupid=groupid).to_json()
+            return Response(posts, mimetype="application/json", status=200)
+        else:
+            return "You do not have the required access", 200
+
+
+class CreateGroupApi(Resource):
+    # first user is the ADMIN
+    # create group
+    def post(self):
+        # body has id of group creator
+        body = request.get_json()
+        userid = body['userid']
+        name = body['userid']
+        if body['visibility']:
+            visibility = body['visibility']
+        else:
+            visibility = 'public'
+        group = Group(name=name,visibility=visibility)
+        group.role_dict[userid] = 'ADMIN'
         group.save()
         groupid = group.id
         return {'groupid': str(groupid)}, 200
 
 
-class addtogroupapi(Resource):
+class AddUserGroupApi(Resource):
 
-    # push user to the group by roles who have add rights
-    def put(self, id):
-        # id is group id here
-        # body will have userid of both admin and new join
+    # only ADMIN can add user
+    def put(self, groupid):
+        # body will have userid of admin and dict with id and role for new join
         body = request.get_json()
         uid = body['userid']
         nuser = body['newuser']     # dict with {'userid':'role'} ex : {'adsfdsfds':'MEMBER'}
-        group = Group.objects.get(id=id)
-        for user in group.users:
-            if uid in user:
-                permission = Role.objects.get(name=user[uid])
-                permission = permission.permissions
-                if 'ADDUSER' in permission:
-                    group.update(push__users=nuser)
-                    return 'User added successfully'
-                else:
-                    return "You don't have add user rights"
+        nuserid = list(nuser.keys())[0]
+        group = Group.objects.get(id=groupid)
+        nuser.update(group.role_dict)
+        tempdict = group.lastactive_dict
+        # this temp dict is for last active update
+        if uid in group.role_dict and group.role_dict[uid] == 'ADMIN':
+            group.update(set__role_dict=nuser)
+            tempdict[nuserid]=datetime.now()
+            group.update(set__lastactive_dict=tempdict)
+            return "User admitted successfully", 200
+        else:
+            return "Admin access denied"
 
-        return 'Person adding user is not a member of the group'
 
-class removegroupapi(Resource):
+class RemoveUserGroupApi(Resource):
 
-    # pull user from the group by roles who have remove from group rights
-    def put(self,id):
-        # id is group id here
-        # body will have userid of both admin and user to be deleted
+    # only ADMIN can remove user
+    def put(self,groupid):
+        # body will have userid of admin and id of user to be removed
+
         body = request.get_json()
         uid = body['userid']
-        duser = body['deluser']             # dict with {'userid':'role'} ex : {'adsfdsfds':'MEMBER'}
-        group = Group.objects.get(id=id)
-        for user in group.users:
-            if uid in user:
-                permission = Role.objects.get(name=user[uid])
-                permission = permission.permissions
-                if 'DELUSER' in permission:
-                    group.update(pull__users=duser)
-                    return 'User Removed successfully'
-                else:
-                    return "You don't have delete user rights"
+        group = Group.objects.get(id=groupid)
+        if group.role_dict[uid] == 'ADMIN':
+            deluser = body['deluserid']
 
-        return 'Person removing user is not a member of the group'
-
-
-
-    # # show all posts only for member
-    # use public private concept here
-    # def get(self,id):
-
-
-    # change role of user in group only admin
-    #delete group
-
-    # def delete(self, groupid):
-    #     body = request.get_json()
-    #     group = Group.objects(id=groupid).update(**body)
-    #     return ''
-
+            role_dict = group.role_dict
+            lastactive_dict = group.lastactive_dict
+            for key in list(role_dict):
+                if key == deluser:
+                    del role_dict[deluser]
+                    break
+            # element should be deleted in dict via this way otherwise iteration error
+            for key in list(lastactive_dict):
+                if key == deluser:
+                    del lastactive_dict[deluser]
+                    break
+            group.update(set__lastactive_dict=lastactive_dict)
+            group.update(set__role_dict=role_dict)
+            return "user deleted successfully" , 200
+        else:
+            return "You are not an ADMIN" , 200
 
 
 
