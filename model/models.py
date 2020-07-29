@@ -8,6 +8,12 @@ class Role(db.Document):
     permissions = db.ListField(db.StringField())
 
 
+class User(db.Document):
+
+    name = db.StringField(required=True, max_length=30)
+    email = db.StringField(required=True)
+
+
 class Group(db.Document):
 
     name = db.StringField(required=True, max_length=50)
@@ -35,10 +41,7 @@ class Comment(db.Document):
     date_created = db.DateTimeField(default=datetime.datetime.now())
 
 
-class User(db.Document):
 
-    name = db.StringField(required=True, max_length=30)
-    email = db.StringField(required=True)
 
 
 

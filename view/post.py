@@ -37,9 +37,12 @@ class DeletePostApi(Resource):
         body = request.get_json()
         post = Post.objects.get(id=postid)
         group = Group.objects.get(id=groupid)
-        role = group.role_dict[body['userid']]
-        if post.userid == body['userid'] or role == 'ADMIN' or role == 'MODERATOR':
-            post.delete()
-            return "Post deleted",200
-        else:
-            return "You don't have the permission required" , 200
+        try:
+            role = group.role_dict[body['userid']]
+            if post.userid == str(body['userid']) or role == 'ADMIN' or role == 'MODERATOR':
+                post.delete()
+                return "Post deleted",200
+            else:
+                return "You don't have the permission required" , 200
+        except:
+            return "You are no longer member of the group", 200

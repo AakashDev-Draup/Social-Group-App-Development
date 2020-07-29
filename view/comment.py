@@ -38,9 +38,12 @@ class DeleteCommentApi(Resource):
         body = request.get_json()
         comment = Comment.objects.get(id=commentid)
         group = Group.objects.get(id=groupid)
-        role = group.role_dict[body['userid']]
-        if comment.userid == body['userid'] or role == 'ADMIN' or role == 'MODERATOR':
-            comment.delete()
-            return "Comment deleted", 200
-        else:
-            return "You don't have the permission required", 200
+        try:
+            role = group.role_dict[body['userid']]
+            if comment.userid == body['userid'] or role == 'ADMIN' or role == 'MODERATOR':
+                comment.delete()
+                return "Comment deleted", 200
+            else:
+                return "You don't have the permission required", 200
+        except:
+            return "You are not a member of the group", 200

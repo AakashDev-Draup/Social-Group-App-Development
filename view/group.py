@@ -72,26 +72,28 @@ class RemoveUserGroupApi(Resource):
         body = request.get_json()
         uid = body['userid']
         group = Group.objects.get(id=groupid)
-        if group.role_dict[uid] == 'ADMIN':
-            deluser = body['deluserid']
+        try:
+            if group.role_dict[uid] == 'ADMIN':
+                deluser = body['deluserid']
 
-            role_dict = group.role_dict
-            lastactive_dict = group.lastactive_dict
-            for key in list(role_dict):
-                if key == deluser:
-                    del role_dict[deluser]
-                    break
-            # element should be deleted in dict via this way otherwise iteration error
-            for key in list(lastactive_dict):
-                if key == deluser:
-                    del lastactive_dict[deluser]
-                    break
-            group.update(set__lastactive_dict=lastactive_dict)
-            group.update(set__role_dict=role_dict)
-            return "user deleted successfully" , 200
-        else:
-            return "You are not an ADMIN" , 200
-
+                role_dict = group.role_dict
+                lastactive_dict = group.lastactive_dict
+                for key in list(role_dict):
+                    if key == deluser:
+                        del role_dict[deluser]
+                        break
+                # element should be deleted in dict via this way otherwise iteration error
+                for key in list(lastactive_dict):
+                    if key == deluser:
+                        del lastactive_dict[deluser]
+                        break
+                group.update(set__lastactive_dict=lastactive_dict)
+                group.update(set__role_dict=role_dict)
+                return "user deleted successfully" , 200
+            else:
+                return "You are not an ADMIN" , 200
+        except:
+            return "You are not a member of the group" , 200
 
 
 
