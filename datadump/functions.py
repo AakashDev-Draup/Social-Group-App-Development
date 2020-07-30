@@ -62,26 +62,28 @@ def addpost():
             name = str(''.join(random.choices(string.ascii_uppercase +
                                               string.digits, k=6)))
             content = "This post has string {name}".format(name=name)
-            Post(
+            post = Post(
                 userid = ObjectId(userid),
                 groupid = ObjectId(group.id),
                 content = content
 
             ).save()
+            Comment(
+                    userid=ObjectId(userid),
+                    postid=post.id,
+                    content=content
+                    ).save()
+
         group.update(set__lastactive_dict=tempdict)
 
 
-def addcomment():
-    posts = Post.objects
-    for post in posts:
-        name = str(''.join(random.choices(string.ascii_uppercase +
-                                          string.digits, k=6)))
-        content = "my comment is {name}".format(name=name)
-        Comment(
-            userid=post.userid,
-            postid=post,
-            content=content
-        ).save()
+# def addcomment():
+#     posts = Post.objects
+#     for post in posts:
+#         name = str(''.join(random.choices(string.ascii_uppercase +
+#                                           string.digits, k=6)))
+#         content = "my comment is {name}".format(name=name)
+#
 
 
 

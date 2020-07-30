@@ -39,7 +39,8 @@ class DeletePostApi(Resource):
         group = Group.objects.get(id=groupid)
         try:
             role = group.role_dict[body['userid']]
-            if post.userid == str(body['userid']) or role == 'ADMIN' or role == 'MODERATOR':
+            posts = Post.objects(userid=body['userid'])
+            if post in posts or role == 'ADMIN' or role == 'MODERATOR':
                 post.delete()
                 return "Post deleted",200
             else:
