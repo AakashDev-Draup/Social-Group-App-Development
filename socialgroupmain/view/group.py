@@ -7,7 +7,6 @@ from flask_restful import Resource
 from datetime import datetime
 
 
-
 class GetGroupApi(Resource):
 
     @auth.login_required
@@ -21,8 +20,8 @@ class GetGroupApi(Resource):
                 return Response(group, mimetype="application/json", status=200)
             else:
                 return "You are not member of the group", 500
-        except:
-            return "Invalid group id",500
+        except Exception as e:
+            return e
 
 
 class ReadGroupApi(Resource):

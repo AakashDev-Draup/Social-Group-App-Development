@@ -1,17 +1,10 @@
 
-from socialgroupmain.configuration.config import initialize_db,api,app,schedule_tasks
-from socialgroupmain.urls.url import initialize_routes
+from socialgroupmain.configuration.config import schedule_tasks,api,app
 from datetime import datetime
 from socialgroupmain.scheduler_tasks.del_inactive_users import inactive_users
 from socialgroupmain.scheduler_tasks.daily_feed import dailyfeed
 
 
-app.config['MONGODB_SETTINGS'] = {
-    'host': 'mongodb://localhost/Social-Group-Private'
-}
-
-initialize_db(app)
-initialize_routes(api)
 
 
 """these are commented to prevent from execution in trial runs
@@ -29,6 +22,6 @@ initialize_routes(api)
 # schedule_tasks(today_mid,dailyfeed,86400,None)
 
 # schedule_tasks(today_mid,inactive_users,86400*2,None)
-app.run(debug=True)
+
 
 

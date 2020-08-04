@@ -10,14 +10,16 @@ with role based access control.
 
 1. Python 3.6 or above.
 2. Flask and other Python libraries from the requirements.txt file.
-2. Mongodb installed with a local database connection established.
-3. Redis Queue installed with a local connection established.
+3. Mongodb installed with a local database connection established.
+4. Redis Queue installed with a local connection established.
 
 ### Installation
 
 1. Copy the contents or make a repository for the social group app development folder.
-2. Install all the prerequisite files.
-3. Run the run.py file using a python interpreter.
+2. Install all the prerequisites.
+3. Run the run.py file using a python interpreter. ex : python run.py
+
+_Note: Make sure your path is properly set._
 
 
 

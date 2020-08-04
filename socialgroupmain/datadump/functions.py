@@ -4,6 +4,8 @@ from socialgroupmain.model.models import User, Group, Post, Comment
 from bson import ObjectId
 from datetime import datetime
 from werkzeug.security import generate_password_hash
+from mongoengine import connect
+connect("Social-Group")
 
 
 def makeuser(n):
@@ -40,10 +42,15 @@ def addusergroup():
     roles = ['ADMIN', 'MODERATOR', 'MEMBER']
     for user in users:
         userlist.append(str(user.id))
-
-    dist = [50] * 300
+    total = len(userlist)
+    distribution = []
+    for val in range(0,total,300):
+        if total-val>300:
+            distribution.append(300)
+        else:
+            distribution.append(total-val)
     Inputt = iter(userlist)
-    Output = [list(islice(Inputt, ele)) for ele in dist]
+    Output = [list(islice(Inputt, ele)) for ele in distribution]
     groups = Group.objects
     count = 0
     for group in groups:
