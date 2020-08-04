@@ -32,6 +32,7 @@ _Note: All the commands are run from the project directory Social-Group-App-Deve
 <br>
 
 ** ex : python3 -c 'from socialgroupmain.datadump.functions import addpostcomment; addpostcomment()' **
+<br>
 
   
 
