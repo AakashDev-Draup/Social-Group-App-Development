@@ -1,8 +1,8 @@
 
 from datetime import datetime, timedelta
 from mongoengine import Q
-from model.models import Group,Post, User
-from mail.mail import send_email
+from socialgroupmain.model.models import Group,Post, User
+from socialgroupmain.mail_module.mail_functions import send_mail
 
 
 def dailyfeed():
@@ -19,5 +19,6 @@ def dailyfeed():
             if access == 'ADMIN' or access == 'MODERATOR':
                 user = User.objects(id=userid)
                 recipients.append(user)
-        # send_email(subject, sender, recipients, text_body)
-        send_email('Daily feed','socialgroup.co.in',recipients,content)
+        """remove the comment tag to make the mail function effective"""
+        # send_mail(recipients,content)
+        # send_mail(recipients,content)

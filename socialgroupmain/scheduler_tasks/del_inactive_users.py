@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-from model.models import Group
+from socialgroupmain.model.models import Group
 
 
 def inactive_users():

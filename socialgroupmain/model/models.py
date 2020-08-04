@@ -1,16 +1,12 @@
 
-from configuration.config import db
+from socialgroupmain.configuration.config import db
 import datetime
-
-
-class Role(db.Document):
-    name = db.StringField(required=True,unique=True, max_length=50)
-    permissions = db.ListField(db.StringField())
 
 
 class User(db.Document):
 
-    name = db.StringField(required=True, max_length=30)
+    name = db.StringField(required=True,unique=True, max_length=30)
+    password = db.StringField(required=True)
     email = db.StringField(required=True)
 
 

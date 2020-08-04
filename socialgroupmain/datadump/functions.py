@@ -1,18 +1,20 @@
 import string
 import random
-from model.models import User, Group, Post, Comment
+from socialgroupmain.model.models import User, Group, Post, Comment
 from bson import ObjectId
 from datetime import datetime
+from werkzeug.security import generate_password_hash
+
 
 def makeuser(n):
     for i in range(n):
-        name = str(''.join(random.choices(string.ascii_uppercase +
-                                          string.ascii_lowercase, k=6)))
-
+        name = str(''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6)))
+        password = generate_password_hash("{name}123".format(name=name))
         email = "{name}@gmail.com".format(name=name)
 
         User(
             name=name,
+            password=password,
             email=email
         ).save()
 
@@ -52,7 +54,7 @@ def addusergroup():
         count += 1
 
 
-def addpost():
+def addpostcomment():
     groups = Group.objects
     for group in groups:
         tempdict = group.lastactive_dict

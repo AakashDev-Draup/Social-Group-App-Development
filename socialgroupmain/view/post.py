@@ -1,15 +1,31 @@
 from bson import ObjectId
-from flask import request
-from model.models import User,Group,Post,Role
+from flask import request,Response
+from socialgroupmain.model.models import User,Group,Post
 from flask_restful import Resource
 from datetime import datetime
+from socialgroupmain.auth_module.auth_main import auth
+
+
+class GetPostApi(Resource):
+    @auth.login_required
+    def get(self,groupid,postid):
+        body = request.get_json()
+        try:
+            group = Group.objects.get(id=groupid)
+            if body['userid'] in group.role_dict:
+                post = Post.objects(id=postid).to_json()
+                return Response(post, mimetype="application/json", status=200)
+            else:
+                return "You are not member of the group", 500
+        except:
+            return "Invalid group or post id", 500
 
 
 class PostApi(Resource):
 
     # Update last active status for the user who posted
     # Only group users can post
-
+    @auth.login_required
     def post(self,groupid):
         # body contains user id,content
         body = request.get_json()
@@ -32,6 +48,7 @@ class PostApi(Resource):
 
 class DeletePostApi(Resource):
     # only post owner, admin and moderator can delete
+    @auth.login_required
     def delete(self,groupid,postid):
         # body contains user id
         body = request.get_json()
