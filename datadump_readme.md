@@ -1,4 +1,4 @@
-### Data dump
+## Data dump
 
 The working of the data dump is shown below with example:
 
