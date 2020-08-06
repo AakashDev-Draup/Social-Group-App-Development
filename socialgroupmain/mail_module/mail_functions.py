@@ -7,9 +7,9 @@ import smtplib
 
 def send_mail(recipients,content):
     for dest in recipients:
-        s = smtplib.SMTP('smtp.gmail.com', 27017)
+        s = smtplib.SMTP('smtp.gmail.com', 587)
         s.starttls()
-        s.login("emailid", "password")
-        message = "Message_you_need_to_send"
-        s.sendmail("senders email", dest, message)
+        s.login("demosocialapptest@gmail.com", "Demo@test1234")
+        # message = "Message_you_need_to_send"
+        s.sendmail("demosocialapptest@gmail.com", dest, content)
         s.quit()

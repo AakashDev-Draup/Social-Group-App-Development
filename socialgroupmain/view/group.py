@@ -2,7 +2,7 @@ from flask import Response, request
 
 from socialgroupmain.auth_module.auth_main import auth
 
-from socialgroupmain.model.models import Group,Post
+from socialgroupmain.model.models import Group, Post, User
 from flask_restful import Resource
 from datetime import datetime
 
@@ -11,13 +11,23 @@ class GetGroupApi(Resource):
 
     @auth.login_required
     def get(self,groupid):
-
-        body = request.get_json()
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
         try:
             group = Group.objects.get(id=groupid)
-            if body['userid'] in group.role_dict:
+            if uid in group.role_dict:
+                temp = Group.objects.get(id=groupid)
+
+                tempdate = str(temp.date_created)
+
                 group = Group.objects(id=groupid).to_json()
-                return Response(group, mimetype="application/json", status=200)
+
+                print(group)
+
+                # group['date_created'] = tempdate
+                #
+                # return Response(group, mimetype="application/json", status=200)
             else:
                 return "You are not member of the group", 500
         except Exception as e:
@@ -28,23 +38,24 @@ class ReadGroupApi(Resource):
     # read group contents based on access offered by group i.e. public or private
     @auth.login_required
     def get(self,groupid):
-        # body will have userid of person accessing to read
-        body = request.get_json()
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
 
         try:
-            userid = body['userid']
             group = Group.objects.get(id=groupid)
 
             if group.visibility == 'public':
                 posts = Post.objects(groupid=groupid).to_json()
                 return Response(posts, mimetype="application/json", status=200)
-            elif userid in group.role_dict:
+            elif uid in group.role_dict:
                 posts = Post.objects(groupid=groupid).to_json()
                 return Response(posts, mimetype="application/json", status=200)
             else:
                 return "You do not have the required access", 200
-        except:
-            return "Enter all the details and in proper format", 500
+
+        except Exception as e:
+            return e
 
 
 class CreateGroupApi(Resource):
@@ -52,16 +63,15 @@ class CreateGroupApi(Resource):
     # create group
     @auth.login_required
     def post(self):
-        # body has id of group creator and name of group
+        # body has visibility = (default= public) and name of group
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+
         body = request.get_json()
-        userid = body['userid']
-        name = body['userid']
-        if body['visibility']:
-            visibility = body['visibility']
-        else:
-            visibility = 'public'
-        group = Group(name=name,visibility=visibility)
-        group.role_dict[userid] = 'ADMIN'
+
+        group = Group(**body)
+        group.role_dict[uid] = 'ADMIN'
         group.save()
         groupid = group.id
         return {'groupid': str(groupid)}, 200
@@ -71,10 +81,14 @@ class AddUserGroupApi(Resource):
     @auth.login_required
     # only ADMIN can add user
     def put(self, groupid):
-        # body will have userid of admin and dict with id and role for new join
+        # body will have dict with id and role for new join
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+
         body = request.get_json()
-        uid = body['userid']
-        nuser = body['newuser']     # dict with {'userid':'role'} ex : {'adsfdsfds':'MEMBER'}
+
+        nuser = body['adduser']     # dict with {'userid':'role'} ex : {'adsfdsfds':'MEMBER'}
         nuserid = list(nuser.keys())[0]
         group = Group.objects.get(id=groupid)
         nuser.update(group.role_dict)
@@ -94,13 +108,16 @@ class RemoveUserGroupApi(Resource):
     @auth.login_required
     # only ADMIN can remove user
     def put(self,groupid):
-        # body will have userid of admin and id of user to be removed
+        # body will have id of user to be removed
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
         body = request.get_json()
-        uid = body['userid']
+
         group = Group.objects.get(id=groupid)
         try:
             if group.role_dict[uid] == 'ADMIN':
-                deluser = body['deluserid']
+                deluser = body['deleteuser']
 
                 role_dict = group.role_dict
                 lastactive_dict = group.lastactive_dict
@@ -126,15 +143,19 @@ class ChangeRoleApi(Resource):
     # only admin can change role
     @auth.login_required
     def put(self,groupid):
-        # body contains userid of admin
-        # user id of person whose role is changed and role
+
+        # body contains dict of person whose role is changed {"user id":"new role"}
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+
         body = request.get_json()
 
         group = Group.objects(id=groupid).get()
         try:
-            if group.role_dict[body['userid']] == 'ADMIN':
+            if group.role_dict[uid] == 'ADMIN':
                 role_dict = group.role_dict
-                role_dict[body['chnguserid']] = body['role']
+                role_dict.update(body['changerole'])
                 group.update(set__role_dict=role_dict)
                 return "Role changed successfully",200
             else:

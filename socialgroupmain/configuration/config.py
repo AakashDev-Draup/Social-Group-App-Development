@@ -1,8 +1,8 @@
 #~movie-bag/database/db.py
 
 from flask import Flask
-import redis
-from rq import Queue
+from redis import Redis
+from rq import Queue, Worker
 from flask_mail import Mail
 from flask_restful import Api
 from flask_mongoengine import MongoEngine
@@ -13,23 +13,15 @@ app = Flask(__name__)
 api = Api(app)
 mail = Mail(app)
 
-r = redis.Redis()
 
-scheduler = Scheduler('foo', connection=r)
-q = Queue(connection=r)
+queue = Queue('q',connection=Redis())
 
 
-def schedule_tasks(time_firstexec,func,freq,no_ofexec):
+db = MongoEngine()
 
-    scheduler.schedule(
-        scheduled_time=time_firstexec,            # Time for first execution, datetime.min for 00:00
-        func=func(),                     # Function to be queued
-        args=[],             # Arguments passed into function when executed
-        kwargs={},         # Keyword arguments passed into function when executed
-        interval=freq,                   # Time before the function is called again, in seconds
-        repeat=no_ofexec,                     # Repeat this number of times (None means repeat forever)
-        meta={}            # Arbitrary pickleable data on the job itself
-    )
+
+def initialize_db(app):
+    db.init_app(app)
 
 
 # list_of_job_instances = scheduler.get_jobs()
@@ -37,8 +29,3 @@ def schedule_tasks(time_firstexec,func,freq,no_ofexec):
 #     print(job)
 #     scheduler.cancel(job)
 
-db = MongoEngine()
-
-
-def initialize_db(app):
-    db.init_app(app)

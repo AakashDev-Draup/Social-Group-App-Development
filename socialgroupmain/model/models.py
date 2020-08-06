@@ -25,7 +25,7 @@ class Post(db.Document):
     groupid = db.ReferenceField('Group')
     content = db.StringField(required=True, max_length=160)
     # approval is set to true for now
-    approval = db.StringField(Default=True, max_length=10)
+    approval = db.BooleanField(default=True, max_length=10)
     date_created = db.DateTimeField(default=datetime.datetime.now())
 
 
@@ -37,7 +37,10 @@ class Comment(db.Document):
     date_created = db.DateTimeField(default=datetime.datetime.now())
 
 
+class SaveLogs(db.Document):
 
+    groupid = db.ReferenceField('Group')
+    message = db.ListField(db.StringField())
 
 
 

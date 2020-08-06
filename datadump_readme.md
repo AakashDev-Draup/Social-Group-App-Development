@@ -10,7 +10,7 @@ _Note: All the commands are run from the project directory Social-Group-App-Deve
 
 1. First users are created using the make user function. Open the terminal and run the command in the following format.
 
-  **ex : python3 -c 'from socialgroupmain.datadump.functions import makeuser; makeuser(15000)'**
+   **ex : python3 -c 'from socialgroupmain.datadump.functions import makeuser; makeuser(15000)'**
 
 2. Then groups are made. Make sure you make sufficient no of groups as in the data dump script max user in group is 300. So for 15000 users create at least 50 groups.
 
@@ -20,8 +20,8 @@ _Note: All the commands are run from the project directory Social-Group-App-Deve
  **ex : python3 -c 'from socialgroupmain.datadump.functions import addusergroup; addusergroup()'**
 
 4. Finally run the add post and comment function which makes a post and comment from each user. No argument is supplied to the function every user makes a post and a comment.
- 
-**ex : python3 -c 'from socialgroupmain.datadump.functions import addpostcomment; addpostcomment()'**
+
+    **ex : python3 -c 'from socialgroupmain.datadump.functions import addpostcomment; addpostcomment()'**
 
   
 

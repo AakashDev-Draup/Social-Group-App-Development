@@ -1,8 +1,7 @@
 
-from socialgroupmain.configuration.config import schedule_tasks,api,app
-from datetime import datetime
-from socialgroupmain.scheduler_tasks.del_inactive_users import inactive_users
-from socialgroupmain.scheduler_tasks.daily_feed import dailyfeed
+from socialgroupmain.configuration.config import api,app
+
+
 
 
 
@@ -21,7 +20,7 @@ from socialgroupmain.scheduler_tasks.daily_feed import dailyfeed
 # today_mid = datetime.combine(date.today(), datetime.min.time()) + timedelta(hours=24)
 # schedule_tasks(today_mid,dailyfeed,86400,None)
 
-# schedule_tasks(today_mid,inactive_users,86400*2,None)
+# schedule_tasks(datetime.now(),inactive_users,60,1)
 
 
 
