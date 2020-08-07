@@ -17,17 +17,8 @@ class GetGroupApi(Resource):
         try:
             group = Group.objects.get(id=groupid)
             if uid in group.role_dict:
-                temp = Group.objects.get(id=groupid)
-
-                tempdate = str(temp.date_created)
-
                 group = Group.objects(id=groupid).to_json()
-
-                print(group)
-
-                # group['date_created'] = tempdate
-                #
-                # return Response(group, mimetype="application/json", status=200)
+                return Response(group, mimetype="application/json", status=200)
             else:
                 return "You are not member of the group", 500
         except Exception as e:

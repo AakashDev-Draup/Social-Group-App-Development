@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, Response
 from socialgroupmain.model.models import User
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
@@ -28,6 +28,15 @@ class SignupApi(Resource):
             return {'userid': str(userid)}, 200
         except:
             return "username should be unique try again",500
+
+
+class GetUserApi(Resource):
+    @auth.login_required
+    def get(self):
+        user = request.authorization
+        uid = User.objects(name=user['username']).to_json()
+
+        return Response(uid, mimetype="application/json", status=200)
 
 
 

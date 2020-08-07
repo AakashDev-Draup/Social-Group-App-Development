@@ -14,7 +14,7 @@ api = Api(app)
 mail = Mail(app)
 
 
-queue = Queue('q',connection=Redis())
+queue = Queue('test',connection=Redis())
 
 
 db = MongoEngine()

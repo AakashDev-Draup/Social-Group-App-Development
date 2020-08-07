@@ -13,6 +13,7 @@
     api.add_resource(GetGroupApi, '/api/group/<groupid>')                                   # get the group by id
     api.add_resource(GetPostApi, '/api/group/<groupid>/post/<postid>')                      # get the post by id
     api.add_resource(GetCommentApi, '/api/group/<groupid>/comment/<commentid>')             # get the comment by id
+     api.add_resource(GetUserApi, '/api/user')  											# get the group by id
 
 ## Description
 
@@ -38,11 +39,10 @@ tab before submitting the request._
 
 After you signup you can create your group using this api. As you created the group you will be the admin of the
 group and you will have the rights to add user and change their roles. The body of the request will contain the
-user id, the name of the group, and the visibility. By default the visibility is public.
+the name of the group, and the visibility. By default the visibility is public.
 
 For ex : Body<br>
 {<br>
-"userid":"asdfadsfdsfds54564156",<br>
 "name":"Test group",<br>
 "visibility":"private"<br>
 }<br>
@@ -50,102 +50,67 @@ For ex : Body<br>
 ### (AddUserGroupApi, '/api/group/<groupid>/add/user')  
 
 This api is used for adding member to the group. The user adding the member should be an admin. The body of the 
-request will contain the user id of the user adding the member and a dictionary containing user id of the member being
-added to the group and his role between 'ADMIN', 'MEMBER', and 'MODERATOR'.
+request will contain  a dictionary containing user id of the member being added to the group and his role between 'ADMIN', 'MEMBER', and 'MODERATOR'.
 
 For ex : Body<br>
 {<br>
-"userid":"asdfadsfdsfds54564156",<br>
-"newuser":{"dfdfasdfdsf":"MEMBER"}<br>
+"adduser":{"dfdfasdfdsf":"MEMBER"}<br>
 } <br>
 
 ### (RemoveUserGroupApi, '/api/group/<groupid>/remove/user')
 
-This api is used to remove user from the group. The body of the request contains the user id of one of the admins of
- group and user id of the member being removed.
- 
+This api is used to remove user from the group. The body of the request contains user id of the member being removed.
+
  For ex : Body<br>
 {<br>
-"userid":"asdfadsfdsfds54564156",<br>
-"deluserid":"dsfgdfgfhfghfghfg"<br>
+"deleteuser":"dsfgdfgfhfghfghfg"<br>
 } <br>
 
 ### (PostApi, '/api/group/<groupid>/post/add')
 
-This API is used to create a post. The body contains the user id of the post owner and content.
-The user creating the post must be member of the group.
+This API is used to create a post. The body contains content. The user creating the post must be member of the group.
 
  For ex : Body<br>
 {<br>
-"userid":"asdfadsfdsfds54564156",<br>
 "content":"my first post"<br>
 } <br>
 
 ### (CommentApi, '/api/group/<groupid>/post/<postid>/comment/add')
 
-This API is used to create a comment. The body contains the user id of the member who commented and content.
-The user creating the comment must be member of the group.
+This API is used to create a comment. The body contains the  content. The user creating the comment must be member of the group.
 
  For ex : Body<br>
 {<br>
-"userid":"asdfadsfdsfds54564156",<br>
 "content":"my first comment"<br>
 }<br>
 
 ### (DeletePostApi, '/api/group/<groupid>/post/<postid>/delete')
 
 This Api is used to delete a post. User can delete his post. ADMIN and MODERATOR can delete any post.
-The body of the request contains the user id of the member who wants to delete.
 
- For ex : Body<br>
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
 
 ### (DeleteCommentApi, '/api/group/<groupid>/comment/<commentid>/delete') 
 
 This Api is used to delete a comment. User can delete his comment. ADMIN and MODERATOR can delete any comment.
-The body of the request contains the user id of the member who wants to delete.
 
- For ex : Body<br>
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
 
 ### (ReadGroupApi, '/api/group/<groupid>/read')
 
 This Api fetches all the posts in a group. You must be a member of the group.
-The body of the request contains the user id of the member who wants to access the group. 
 
- For ex : Body<br>
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
 
 ### (GetGroupApi, '/api/group/<groupid>') 
 
-To get a single group information you use this Api. You must be an ADMIN of the group.
-The body of the request should contain admin user id.
-
- For ex : Body
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
+To get a single group information you use this Api.
                 
+
 ### (GetPostApi, '/api/group/<groupid>/post/<postid>')   
 
 This Api is used to fetch a particular post. The person accessing must be a member of the group.
- 
- For ex : Body<br>
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
          
+
 ### (GetCommentApi, '/api/group/<groupid>/comment/<commentid>')
 
 This Api is used to fetch a particular comment. The person accessing must be a member of the group.
- 
- For ex : Body<br>
-{<br>
-"userid":"asdfadsfdsfds54564156"<br>
-}<br>
+
+

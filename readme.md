@@ -17,9 +17,10 @@ with role based access control.
 
 1. Copy the contents or make a repository for the social group app development folder.
 2. Install all the prerequisites.
-3. Run the run.py file using a python interpreter. ex : python run.py
+3. Run the run.py file using a python interpreter. ex : python3 run.py
+4. To run the scheduler scripts set the path to scheduler_tasks and run the scheduler script ex : python3 scheduler.py
 
-_Note: Make sure your path is properly set._
+_Note: Make sure your path is properly set before running the file._
 
 
 

@@ -5,13 +5,14 @@ from bson import ObjectId
 from datetime import datetime
 from werkzeug.security import generate_password_hash
 from mongoengine import connect
-connect("Social-Group")
+connect("Social-Group-Dump")
 
 
 def makeuser(n):
+    temp_pass = generate_password_hash("1234")
     for i in range(n):
         name = str(''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6)))
-        password = generate_password_hash("{name}123".format(name=name))
+        password = temp_pass
         email = "{name}@gmail.com".format(name=name)
 
         User(
@@ -44,9 +45,9 @@ def addusergroup():
         userlist.append(str(user.id))
     total = len(userlist)
     distribution = []
-    for val in range(0,total,300):
-        if total-val>300:
-            distribution.append(300)
+    for val in range(0,total,100):
+        if total-val>100:
+            distribution.append(100)
         else:
             distribution.append(total-val)
     Inputt = iter(userlist)

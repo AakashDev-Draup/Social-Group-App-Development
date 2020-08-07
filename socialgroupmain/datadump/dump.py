@@ -13,10 +13,10 @@ from socialgroupmain.datadump.functions import makeuser,makegroup,addusergroup,a
 """This function is used to make user
     name, password, and email is auto generated 
     just supply the no of users as argument"""
-# makegroup(15000)
-
-"""This function makes the group supply the no of group as argument"""
+# makeuser(5000)
 # makegroup(50)
+"""This function makes the group supply the no of group as argument"""
+
 
 """This function adds user to the group"""
 # addusergroup()

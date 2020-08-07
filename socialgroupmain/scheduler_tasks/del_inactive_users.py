@@ -7,6 +7,7 @@ from mongoengine import connect
 def inactive_users():
 
     connect("Social-Group")
+    # connect("Social-Group-Dump")
     print('Scheduler working')
     present_time = datetime.now()
     groups = Group.objects()

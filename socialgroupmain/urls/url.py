@@ -1,4 +1,4 @@
-from socialgroupmain.auth_module.auth_main import SignupApi
+from socialgroupmain.auth_module.auth_main import SignupApi,GetUserApi
 from socialgroupmain.view.group import CreateGroupApi, AddUserGroupApi, RemoveUserGroupApi, ReadGroupApi,ChangeRoleApi,GetGroupApi
 from socialgroupmain.view.post import PostApi,DeletePostApi,GetPostApi
 from socialgroupmain.view.comment import CommentApi,DeleteCommentApi,GetCommentApi
@@ -19,4 +19,5 @@ def initialize_routes(api):
     api.add_resource(GetGroupApi, '/api/group/<groupid>')                                   # get the group by id
     api.add_resource(GetPostApi, '/api/group/<groupid>/post/<postid>')                      # get the post by id
     api.add_resource(GetCommentApi, '/api/group/<groupid>/comment/<commentid>')             # get the comment by id
+    api.add_resource(GetUserApi, '/api/user')  # get the group by id
 

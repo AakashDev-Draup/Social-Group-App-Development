@@ -10,6 +10,10 @@ if __name__ == "__main__":
         'host': 'mongodb://localhost/Social-Group'
     }
 
+    # app.config['MONGODB_SETTINGS'] = {
+    #     'host': 'mongodb://localhost/Social-Group-Dump'
+    # }
+
     initialize_db(app)
     initialize_routes(api)
 
