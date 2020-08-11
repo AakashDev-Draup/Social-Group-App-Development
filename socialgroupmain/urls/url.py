@@ -1,7 +1,8 @@
-from socialgroupmain.auth_module.auth_main import SignupApi,GetUserApi
-from socialgroupmain.view.group import CreateGroupApi, AddUserGroupApi, RemoveUserGroupApi, ReadGroupApi,ChangeRoleApi,GetGroupApi
-from socialgroupmain.view.post import PostApi,DeletePostApi,GetPostApi
-from socialgroupmain.view.comment import CommentApi,DeleteCommentApi,GetCommentApi
+from socialgroupmain.auth_module.auth_main import SignupApi,GetUserApi,DeleteUserApi
+from socialgroupmain.view.group import CreateGroupApi, AddUserGroupApi, RemoveUserGroupApi,\
+    ReadGroupApi,ChangeRoleApi,GetGroupApi,EditGroupApi,DeleteGroupApi
+from socialgroupmain.view.post import PostApi,DeletePostApi,GetPostApi,EditPostApi,ApprovePostApi
+from socialgroupmain.view.comment import CommentApi,DeleteCommentApi,GetCommentApi,EditCommentApi,AllCommentsApi
 
 
 def initialize_routes(api):
@@ -15,9 +16,15 @@ def initialize_routes(api):
     api.add_resource(DeletePostApi, '/api/group/<groupid>/post/<postid>/delete')            # delete post
     api.add_resource(DeleteCommentApi, '/api/group/<groupid>/comment/<commentid>/delete')   # delete comment
     api.add_resource(ChangeRoleApi, '/api/group/<groupid>/changerole')                      # change user role
+    api.add_resource(EditCommentApi, '/api/group/<groupid>/comment/<commentid>/edit')  # edit comment
 
+    api.add_resource(EditPostApi, '/api/group/<groupid>/post/<postid>/edit')  # Edit the post
     api.add_resource(GetGroupApi, '/api/group/<groupid>')                                   # get the group by id
     api.add_resource(GetPostApi, '/api/group/<groupid>/post/<postid>')                      # get the post by id
     api.add_resource(GetCommentApi, '/api/group/<groupid>/comment/<commentid>')             # get the comment by id
-    api.add_resource(GetUserApi, '/api/user')  # get the group by id
-
+    api.add_resource(GetUserApi, '/api/user')  # get user by id
+    api.add_resource(EditGroupApi, '/api/group/<groupid>/edit')  # edit group name or visibility
+    api.add_resource(ApprovePostApi, '/api/group/<groupid>/post/<postid>/approve')  # Approve the post
+    api.add_resource(AllCommentsApi, '/api/group/<groupid>/post/<postid>/comments')  # get all the comments for a post
+    api.add_resource(DeleteUserApi, '/api/delete/user')
+    api.add_resource(DeleteGroupApi, '/api/group/<groupid>/delete')

@@ -25,7 +25,7 @@ class Post(db.Document):
     groupid = db.ReferenceField('Group')
     content = db.StringField(required=True, max_length=160)
     # approval is set to true for now
-    approval = db.BooleanField(default=True, max_length=10)
+    approval = db.BooleanField(default=False)
     date_created = db.DateTimeField(default=datetime.datetime.now())
 
 

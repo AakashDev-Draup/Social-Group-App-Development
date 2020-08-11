@@ -2,18 +2,26 @@
 
     api.add_resource(SignupApi, '/api/signup')                                              # signup user
     api.add_resource(CreateGroupApi, '/api/group/create')                                   # create group
-    api.add_resource(AddUserGroupApi, '/api/group/<groupid>/add/user')                      # add user to the group
-    api.add_resource(PostApi, '/api/group/<groupid>/post/add')                              # add post
-    api.add_resource(ReadGroupApi, '/api/group/<groupid>/read')                             # read posts from group
+    api.add_resource(AddUserGroupApi, '/api/group/<groupid>/add/user')                   		# add user to the group
+    api.add_resource(PostApi, '/api/group/<groupid>/add/post')                              # add post
+    api.add_resource(ReadGroupApi, '/api/group/<groupid>/read')                        			# read posts from group
     api.add_resource(RemoveUserGroupApi, '/api/group/<groupid>/remove/user')                # Remove user from the group
-    api.add_resource(CommentApi, '/api/group/<groupid>/post/<postid>/comment/add')          # add comment
+    api.add_resource(CommentApi, '/api/group/<groupid>/post/<postid>/add/comment')          # add comment
     api.add_resource(DeletePostApi, '/api/group/<groupid>/post/<postid>/delete')            # delete post
     api.add_resource(DeleteCommentApi, '/api/group/<groupid>/comment/<commentid>/delete')   # delete comment
     api.add_resource(ChangeRoleApi, '/api/group/<groupid>/changerole')                      # change user role
+    api.add_resource(EditCommentApi, '/api/group/<groupid>/comment/<commentid>/edit')  # edit comment
+    
+    api.add_resource(EditPostApi, '/api/group/<groupid>/post/<postid>/edit')  # Edit the post
     api.add_resource(GetGroupApi, '/api/group/<groupid>')                                   # get the group by id
     api.add_resource(GetPostApi, '/api/group/<groupid>/post/<postid>')                      # get the post by id
     api.add_resource(GetCommentApi, '/api/group/<groupid>/comment/<commentid>')             # get the comment by id
-     api.add_resource(GetUserApi, '/api/user')  											# get the group by id
+    api.add_resource(GetUserApi, '/api/user')  																						# get user by id
+    api.add_resource(EditGroupApi, '/api/group/<groupid>/edit')  													# edit group name or visibility
+    api.add_resource(ApprovePostApi, '/api/group/<groupid>/post/<postid>/approve')  			# Approve the post
+    api.add_resource(AllCommentsApi, '/api/group/<groupid>/post/<postid>/comments')  			# get all the comments for a post
+    api.add_resource(DeleteUserApi, '/api/delete/user')																	# Delete user
+    api.add_resource(DeleteGroupApi, '/api/group/<groupid>/delete')											# Delete group
 
 ## Description
 
@@ -113,4 +121,27 @@ This Api is used to fetch a particular post. The person accessing must be a memb
 
 This Api is used to fetch a particular comment. The person accessing must be a member of the group.
 
+### (GetUserApi, '/api/user')
+
+This Api is used to get user with authorization.
+
+### (EditGroupApi, '/api/group/<groupid>/edit')  													
+
+This Api is used to edit group name or visibility. Body requires data whichever you want to edit.
+
+### api.add_resource(ApprovePostApi, '/api/group/<groupid>/post/<postid>/approve')  			
+
+This Api is used to Approve the post by admin.
+
+### api.add_resource(AllCommentsApi, '/api/group/<groupid>/post/<postid>/comments')  			
+
+This Api gets all the comments for a post.
+
+### api.add_resource(DeleteUserApi, '/api/delete/user')																	
+
+This Api is used to delete user from the app.
+
+### api.add_resource(DeleteGroupApi, '/api/group/<groupid>/delete')											
+
+This Api is used to delete group and associated posts and comments.
 

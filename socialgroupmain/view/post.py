@@ -1,11 +1,57 @@
 from bson import ObjectId
 from flask import request,Response
-import json
-
+from socialgroupmain import constants
+from socialgroupmain.configuration.config import queue
+from socialgroupmain.mail_module.mail_functions import send_mail
 from socialgroupmain.model.models import User,Group,Post
 from flask_restful import Resource
 from datetime import datetime
 from socialgroupmain.auth_module.auth_main import auth
+
+
+class ApprovePostApi(Resource):
+    @auth.login_required
+    def put(self,groupid,postid):
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+        # body contains the approval = True
+        body = request.get_json()
+        group = Group.objects.get(id=groupid)
+        temp = group.role_dict
+        post = Post.objects.get(id=postid)
+        if temp[uid] in constants.group_permissions:
+            post.approval = True
+            post = post.to_json()
+            return Response(post, mimetype="application/json", status=200)
+
+        else:
+            return "User doesn't have access", 500
+
+
+class EditPostApi(Resource):
+    @auth.login_required
+    def put(self,groupid,postid):
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+        # body contains the new content for post
+        body = request.get_json()
+
+        post = Post.objects.get(id=postid)
+        group = Group.objects.get(id=groupid)
+        temp = group.role_dict
+        lastdict = group.lastactive_dict
+
+        if uid == str(post.userid) or temp[uid] in constants.group_permissions:
+            lastdict[uid] = datetime.now()
+            group.update(set__lastactive_dict=lastdict)
+            post.update(set__content=body['content'])
+            post = post.to_json()
+            return Response(post, mimetype="application/json", status=200)
+
+        else:
+            return "User doesn't exist or doesn't have access", 500
 
 
 class GetPostApi(Resource):
@@ -51,6 +97,14 @@ class PostApi(Resource):
             temp_dict = group.lastactive_dict
             temp_dict[uid]=datetime.now()
             group.update(set__lastactive_dict=temp_dict)
+            recipients = []
+            for userid, access in group.role_dict.items():
+                if access in constants.group_permissions:
+                    user = User.objects.get(id=userid)
+                    recipients.append(user.email)
+
+            content = "Post id : {postid} pending for approval".format(postid=post.id)
+            queue.enqueue(send_mail, [recipients], content)
 
             return {'postid': str(post.id)}, 200
         else:

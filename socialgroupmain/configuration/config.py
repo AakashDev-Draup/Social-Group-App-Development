@@ -2,7 +2,7 @@
 
 from flask import Flask
 from redis import Redis
-from rq import Queue, Worker
+from rq import Queue
 from flask_mail import Mail
 from flask_restful import Api
 from flask_mongoengine import MongoEngine

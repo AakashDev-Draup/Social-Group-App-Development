@@ -1,10 +1,56 @@
 from flask import Response, request
+from mongoengine import Q
 
 from socialgroupmain.auth_module.auth_main import auth
 
-from socialgroupmain.model.models import Group, Post, User
+from socialgroupmain.model.models import Group, Post, User,Comment
 from flask_restful import Resource
 from datetime import datetime
+from socialgroupmain import constants
+
+
+class DeleteGroupApi(Resource):
+    @auth.login_required
+    def delete(self,groupid):
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+        group = Group.objects.get(id=groupid)
+        if group.role_dict[uid] in constants.admin:
+            group.delete()
+            for post in Post.objects(groupid=groupid):
+                postid = post.id
+                post.delete()
+                Comment.objects(postid=postid).delete()
+            return "Group deleted successfully", 200
+        else:
+            return "You do not have the required access",500
+
+
+class EditGroupApi(Resource):
+    @auth.login_required
+    def put(self,groupid):
+        user = request.authorization
+        uid = User.objects.get(name=user['username'])
+        uid = str(uid.id)
+        # body contains the name and visibility to be edited
+        body = request.get_json()
+        group = Group.objects.get(id=groupid)
+        if group.role_dict[uid] in constants.admin:
+            if 'name' and 'visibility' in body:
+                name = body['name']
+                visibility = body['visibility']
+                group.update(set__name=name)
+                group.update(set__visibility=visibility)
+                group = group.to_json()
+                return Response(group, mimetype="application/json", status=200)
+            else:
+                name = body['name']
+                group.update(set__name=name)
+                group = group.to_json()
+                return Response(group, mimetype="application/json", status=200)
+        else:
+            return "You do not have the required access", 500
 
 
 class GetGroupApi(Resource):
@@ -27,6 +73,7 @@ class GetGroupApi(Resource):
 
 class ReadGroupApi(Resource):
     # read group contents based on access offered by group i.e. public or private
+    # and also based on post approval
     @auth.login_required
     def get(self,groupid):
         user = request.authorization
@@ -37,10 +84,10 @@ class ReadGroupApi(Resource):
             group = Group.objects.get(id=groupid)
 
             if group.visibility == 'public':
-                posts = Post.objects(groupid=groupid).to_json()
+                posts = Post.objects(Q(groupid=group.id) & Q(approval=True)).to_json()
                 return Response(posts, mimetype="application/json", status=200)
             elif uid in group.role_dict:
-                posts = Post.objects(groupid=groupid).to_json()
+                posts = Post.objects(Q(groupid=group.id) & Q(approval=True)).to_json()
                 return Response(posts, mimetype="application/json", status=200)
             else:
                 return "You do not have the required access", 200
@@ -82,11 +129,12 @@ class AddUserGroupApi(Resource):
         nuser = body['adduser']     # dict with {'userid':'role'} ex : {'adsfdsfds':'MEMBER'}
         nuserid = list(nuser.keys())[0]
         group = Group.objects.get(id=groupid)
-        nuser.update(group.role_dict)
+        temp = group.role_dict
+        temp.update(nuser)
         tempdict = group.lastactive_dict
         # this temp dict is for last active update
         if uid in group.role_dict and group.role_dict[uid] == 'ADMIN':
-            group.update(set__role_dict=nuser)
+            group.update(set__role_dict=temp)
             tempdict[nuserid]=datetime.now()
             group.update(set__lastactive_dict=tempdict)
             return "User admitted successfully", 200
