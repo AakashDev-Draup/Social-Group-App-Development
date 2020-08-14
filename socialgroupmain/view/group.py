@@ -36,19 +36,22 @@ class EditGroupApi(Resource):
         # body contains the name and visibility to be edited
         body = request.get_json()
         group = Group.objects.get(id=groupid)
+        vals = len(body)
         if group.role_dict[uid] in constants.admin:
-            if 'name' and 'visibility' in body:
+            if vals == 2:
                 name = body['name']
                 visibility = body['visibility']
                 group.update(set__name=name)
                 group.update(set__visibility=visibility)
-                group = group.to_json()
-                return Response(group, mimetype="application/json", status=200)
-            else:
+                return "Updated successfully", 500
+            elif 'name' in body:
                 name = body['name']
                 group.update(set__name=name)
-                group = group.to_json()
-                return Response(group, mimetype="application/json", status=200)
+                return "Updated successfully", 500
+            else:
+                visibility = body['visibility']
+                group.update(set__visibility=visibility)
+                return "Updated successfully", 500
         else:
             return "You do not have the required access", 500
 
@@ -139,7 +142,7 @@ class AddUserGroupApi(Resource):
             group.update(set__lastactive_dict=tempdict)
             return "User admitted successfully", 200
         else:
-            return "Admin access denied"
+            return "Unauthorised access", 401
 
 
 class RemoveUserGroupApi(Resource):
@@ -153,29 +156,31 @@ class RemoveUserGroupApi(Resource):
         uid = str(uid.id)
         body = request.get_json()
 
-        group = Group.objects.get(id=groupid)
         try:
-            if group.role_dict[uid] == 'ADMIN':
-                deluser = body['deleteuser']
-
+            group = Group.objects.get(id=groupid)
+            if group.role_dict[uid] in constants.admin:
+                deluser = body['removeuser']
                 role_dict = group.role_dict
-                lastactive_dict = group.lastactive_dict
-                for key in list(role_dict):
-                    if key == deluser:
-                        del role_dict[deluser]
-                        break
-                # element should be deleted in dict via this way otherwise iteration error
-                for key in list(lastactive_dict):
-                    if key == deluser:
-                        del lastactive_dict[deluser]
-                        break
-                group.update(set__lastactive_dict=lastactive_dict)
-                group.update(set__role_dict=role_dict)
-                return "user deleted successfully" , 200
+                if deluser in role_dict:
+                    lastactive_dict = group.lastactive_dict
+                    for key in list(role_dict):
+                        if key == deluser:
+                            del role_dict[deluser]
+                            break
+                    # element should be deleted in dict via this way otherwise iteration error
+                    for key in list(lastactive_dict):
+                        if key == deluser:
+                            del lastactive_dict[deluser]
+                            break
+                    group.update(set__lastactive_dict=lastactive_dict)
+                    group.update(set__role_dict=role_dict)
+                    return "user deleted successfully" , 200
+                else:
+                    return "user not found" , 404
             else:
                 return "You are not an ADMIN" , 200
         except:
-            return "You are not a member of the group" , 200
+            return "Invalid group or user id" , 200
 
 
 class ChangeRoleApi(Resource):

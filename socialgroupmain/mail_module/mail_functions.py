@@ -1,15 +1,35 @@
 
+
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from decouple import config
 
-# list of email_id to send the mail
-# recipients = ["xxxxx@gmail.com", "yyyyy@gmail.com"]
+email = config('EMAIL')
+password = config('PASSWORD')
 
 
-def send_mail(recipients,content):
-    for dest in recipients:
-        s = smtplib.SMTP('smtp.gmail.com', 587)
-        s.starttls()
-        s.login("demosocialapptest@gmail.com", "Demo@test1234")
-        # message = "Message_you_need_to_send"
-        s.sendmail("demosocialapptest@gmail.com", dest, content)
-        s.quit()
+def send_mail(mail_content,recipients,subject):
+    recipients = list(set(recipients))
+    for recepient in recipients:
+
+        # The mail addresses and password
+        sender_address = email
+        sender_pass = password
+        receiver_address = recepient
+
+        # Setup the MIME
+        message = MIMEMultipart()
+        message['From'] = sender_address
+        message['To'] = receiver_address
+        message['Subject'] = subject
+        # The body and the attachments for the mail
+        message.attach(MIMEText(mail_content, 'plain'))
+        # Create SMTP session for sending the mail
+        session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+        session.starttls()  # enable security
+        session.login(sender_address, sender_pass)  # login with mail_id and password
+        text = message.as_string()
+        session.sendmail(sender_address, receiver_address, text)
+        session.quit()
+        print('Mail Sent')

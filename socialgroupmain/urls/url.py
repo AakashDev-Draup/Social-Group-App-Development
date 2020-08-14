@@ -1,4 +1,4 @@
-from socialgroupmain.auth_module.auth_main import SignupApi,GetUserApi,DeleteUserApi
+from socialgroupmain.auth_module.auth_main import SignupApi,GetUserApi,DeleteUserApi,GetAllUserApi
 from socialgroupmain.view.group import CreateGroupApi, AddUserGroupApi, RemoveUserGroupApi,\
     ReadGroupApi,ChangeRoleApi,GetGroupApi,EditGroupApi,DeleteGroupApi
 from socialgroupmain.view.post import PostApi,DeletePostApi,GetPostApi,EditPostApi,ApprovePostApi
@@ -26,5 +26,6 @@ def initialize_routes(api):
     api.add_resource(EditGroupApi, '/api/group/<groupid>/edit')  # edit group name or visibility
     api.add_resource(ApprovePostApi, '/api/group/<groupid>/post/<postid>/approve')  # Approve the post
     api.add_resource(AllCommentsApi, '/api/group/<groupid>/post/<postid>/comments')  # get all the comments for a post
-    api.add_resource(DeleteUserApi, '/api/delete/user')
+    api.add_resource(DeleteUserApi, '/api/user/delete')
     api.add_resource(DeleteGroupApi, '/api/group/<groupid>/delete')
+    api.add_resource(GetAllUserApi, '/api/allusers/<pageno>')

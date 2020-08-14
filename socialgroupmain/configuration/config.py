@@ -1,4 +1,5 @@
 #~movie-bag/database/db.py
+import logging
 
 from flask import Flask
 from redis import Redis
@@ -10,6 +11,8 @@ from rq_scheduler import Scheduler
 
 
 app = Flask(__name__)
+# print
+
 api = Api(app)
 mail = Mail(app)
 

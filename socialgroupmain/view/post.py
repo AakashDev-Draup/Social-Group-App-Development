@@ -7,6 +7,7 @@ from socialgroupmain.model.models import User,Group,Post
 from flask_restful import Resource
 from datetime import datetime
 from socialgroupmain.auth_module.auth_main import auth
+from socialgroupmain.queue_tasks.checkq import printhello
 
 
 class ApprovePostApi(Resource):
@@ -21,9 +22,9 @@ class ApprovePostApi(Resource):
         temp = group.role_dict
         post = Post.objects.get(id=postid)
         if temp[uid] in constants.group_permissions:
-            post.approval = True
+            post.update(set__approval=True)
             post = post.to_json()
-            return Response(post, mimetype="application/json", status=200)
+            return "successfully approved" , 500
 
         else:
             return "User doesn't have access", 500
@@ -97,15 +98,21 @@ class PostApi(Resource):
             temp_dict = group.lastactive_dict
             temp_dict[uid]=datetime.now()
             group.update(set__lastactive_dict=temp_dict)
-            recipients = []
-            for userid, access in group.role_dict.items():
-                if access in constants.group_permissions:
-                    user = User.objects.get(id=userid)
-                    recipients.append(user.email)
-
-            content = "Post id : {postid} pending for approval".format(postid=post.id)
-            queue.enqueue(send_mail, [recipients], content)
-
+            # for sending mail to admin and moderators for approval if member
+            if group.role_dict[uid] in constants.member:
+                recipients = []
+                for userid, access in group.role_dict.items():
+                    if access in constants.group_permissions:
+                        user = User.objects.get(id=userid)
+                        recipients.append(user.email)
+                subject = 'Post is pending for approval'
+                mail_content = '''Post id : {pid} , Group id : {gid}\n
+                Thank you\n
+                The Social-Group Team'''.format(pid=post.id,gid=groupid)
+                # queue.enqueue(printhello)
+                queue.enqueue(send_mail, mail_content, recipients, subject)
+            else:
+                post.update(set__approval=True)
             return {'postid': str(post.id)}, 200
         else:
             return "You are not a member of the group",200

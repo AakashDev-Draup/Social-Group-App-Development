@@ -1,6 +1,13 @@
 
 from socialgroupmain.configuration.config import db
 import datetime
+from marshmallow import Schema, fields
+
+
+class Sudo_user(Schema):
+    name = fields.Str()
+    password = fields.Str()
+    email = fields.Str()
 
 
 class User(db.Document):

@@ -1,10 +1,54 @@
-from flask import request, Response
-from socialgroupmain.model.models import User,Group
+import json
+
+from flask import request, Response, render_template
+from flask_mongoengine import Pagination
+
+from socialgroupmain.model.models import User,Group,Sudo_user
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import check_password_hash, generate_password_hash
 
 auth = HTTPBasicAuth()
+
+
+class GetAllUserApi(Resource):
+    @auth.login_required
+    def get(self,pageno):
+
+        users = User.objects()
+
+        # The pagination method returns non json pagination object
+        users = Pagination(users,page=int(pageno),per_page=2)
+        # this gives list of user object
+        users = users.items
+
+        # using marshmallow to serialize
+        obj = Sudo_user(many=True)
+        users = obj.dump(users)
+        # using dumps to convert to json object
+        users = json.dumps(users)
+        # print(users)
+
+        return Response(users, mimetype="application/json", status=200)
+
+
+        '''without the pagination method'''
+
+        # offset = (int(pageno) - 1) * items_per_page
+        #
+        # users = User.objects.skip(offset).limit(items_per_page).to_json()
+        #
+        # return Response(users, mimetype="application/json", status=200)
+
+
+class GetUserApi(Resource):
+    @auth.login_required
+    def get(self):
+
+        user = request.authorization
+        uid = User.objects(name=user['username']).to_json()
+
+        return Response(uid, mimetype="application/json", status=200)
 
 
 @auth.verify_password
@@ -28,15 +72,6 @@ class SignupApi(Resource):
             return {'userid': str(userid)}, 200
         except:
             return "username should be unique try again",500
-
-
-class GetUserApi(Resource):
-    @auth.login_required
-    def get(self):
-        user = request.authorization
-        uid = User.objects(name=user['username']).to_json()
-
-        return Response(uid, mimetype="application/json", status=200)
 
 
 class DeleteUserApi(Resource):

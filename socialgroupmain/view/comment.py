@@ -43,12 +43,11 @@ class EditCommentApi(Resource):
         temp = group.role_dict
         lastdict = group.lastactive_dict
 
-        if uid == str(comment.userid) or temp[uid] in constants.group_permissions:
+        if uid == comment.userid or temp[uid] in constants.group_permissions:
             lastdict[uid] = datetime.now()
             group.update(set__lastactive_dict=lastdict)
             comment.update(set__content=body['content'])
-            comment = Comment.objects(id=commentid).to_json()
-            return Response(comment, mimetype="application/json", status=200)
+            return "Comment edited" , 200
 
         else:
             return "User doesn't exist or doesn't have access", 500
