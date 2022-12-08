@@ -2,7 +2,7 @@ aniso8601==8.0.0
 arrow==0.15.8
 asn1crypto==1.4.0
 blinker==1.4
-certifi==2018.1.18
+certifi==2022.12.7
 cffi==1.14.1
 click==7.1.2
 croniter==0.3.34
